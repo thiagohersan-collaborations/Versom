@@ -3,8 +3,8 @@ import oscP5.*;
 import netP5.*;
 
 ControlP5 cp5;
-
-ControlSlice cs, cs2, cs3;
+ControlSlice[] cs = new ControlSlice[3];
+int NUM_SLICES = 3;
 
 void setup() {
   size(500, 600);
@@ -12,20 +12,24 @@ void setup() {
   PFont font = createFont("arial", 20);
 
   cp5 = new ControlP5(this);
-  cs = new ControlSlice(cp5, 0, "rainScene", new PVector(0, 0), new PVector(500, 200));
-  cs.addSlider();
-  cs2 = new ControlSlice(cp5, 1, "rainScene", new PVector(0, cs.getPos().y+cs.getDim().y), new PVector(500, 200));
-  cs3 = new ControlSlice(cp5, 2, "rainScene", new PVector(0, cs2.getPos().y+cs2.getDim().y), new PVector(500, 200));
+  for (int i=0; i<NUM_SLICES; i++) {
+    if (i==0) {
+      cs[i] = new ControlSlice(cp5, i, "rainScene", new PVector(0, 0), new PVector(500, 200));
+      cs[i].addSlider();
+    }
+    else {
+      cs[i] = new ControlSlice(cp5, i, "rainScene", new PVector(0, cs[i-1].getPos().y+cs[i-1].getDim().y), new PVector(500, 200));
+    }
+  }
 }
 
 void draw() {
   background(0);
-  fill(200, 11, 11);
-  rect(cs.getPos().x, cs.getPos().y, cs.getDim().x, cs.getDim().y);
-  fill(150, 11, 11);
-  rect(cs2.getPos().x, cs2.getPos().y, cs2.getDim().x, cs2.getDim().y);
-  fill(100, 11, 11);
-  rect(cs3.getPos().x, cs3.getPos().y, cs3.getDim().x, cs3.getDim().y);
+
+  for (int i=0, rv=200; i<NUM_SLICES; i++,rv-=50) {
+    fill(rv, 11, 11);  
+    rect(cs[i].getPos().x, cs[i].getPos().y, cs[i].getDim().x, cs[i].getDim().y);
+  }
 }
 
 void controlEvent(ControlEvent theEvent) {
